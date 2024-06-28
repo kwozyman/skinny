@@ -1,2 +1,2 @@
 #!/bin/bash
-podman build -f ContainerFile # --squash-all
+podman build -f ContainerFile --squash # --squash-all
