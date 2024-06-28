@@ -1,6 +1,6 @@
 # Skinny RHEL
 
-Scripts for creating a reduced RHEL image via a container that is converted with BOOTC into a bootable raw image
+Scripts for creating a reduced RHEL image via a container that is converted with [BOOTC](https://github.com/osbuild/bootc-image-builder#-image-types) into a bootable raw image
 
 ## Usage
 
