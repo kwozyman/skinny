@@ -2,7 +2,7 @@
 FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 
 ARG EXTRA_RPM_PACKAGES=''
-ARG REMOVE_RPM_PACKAGES='libsmbclient        samba-client-libs    samba-common-libs   sssd-ad             sssd-common         sssd-common-pac     sssd-ipa            sssd-krb5           sssd-krb5-common   sssd-ldap           sssd-nfs-idmap'
+ARG REMOVE_RPM_PACKAGES='libsmbclient samba-client-libs samba-common-libs sssd-ad sssd-common sssd-common-pac sssd-ipa sssd-krb5 sssd-krb5-common sssd-ldap sssd-nfs-idmap'
 
 RUN mv /etc/selinux /etc/selinux.tmp && \
   dnf install -y \
