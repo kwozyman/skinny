@@ -13,7 +13,7 @@ jobs:
       - name: Log in to Quay.io
         uses: redhat-actions/podman-login@v1
         with:
-          username: rhn-support-iranzo
+          username: rhn-support-piranzo
           password: ${{ secrets.REGISTRYIO_PASSWORD }}
           registry: registry.redhat.io
 
