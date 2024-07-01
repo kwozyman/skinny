@@ -7,12 +7,6 @@
           "password": "linux123",
           "key": "$MYKEY",
           "home": "/var/roothome"
-        },
-        {
-          "name": "user",
-          "password": "linux123",
-          "groups": ["wheel"],
-          "key": "$MYKEY"
         }
       ],
       "filesystem": [
