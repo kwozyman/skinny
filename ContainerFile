@@ -14,6 +14,7 @@ RUN mv /etc/selinux /etc/selinux.tmp && \
   pciutils \
   tmux \
   ${EXTRA_RPM_PACKAGES} \
+  && dnf -y upgrade \
   && dnf clean all \
   && mv /etc/selinux.tmp /etc/selinux \
   && ln -s ../cloud-init.target /usr/lib/systemd/system/default.target.wants # Enable cloud-init
