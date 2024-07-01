@@ -1,0 +1,16 @@
+---
+# Add 'repo' label to any root file changes
+repo:
+  - ./*
+
+Container:
+  - ./ContainerFile
+
+Bootc:
+  - ./bootc.sh
+
+Build:
+  - ./build.sh
+
+Util:
+  - ./tag-and-push.sh
