@@ -1,0 +1,26 @@
+{
+  "blueprint": {
+    "customizations": {
+      "user": [
+        {
+          "name": "root",
+          "password": "linux123",
+          "key": "$MYKEY",
+          "home": "/var/roothome"
+        },
+        {
+          "name": "user",
+          "password": "linux123",
+          "groups": ["wheel"],
+          "key": "$MYKEY"
+        }
+      ],
+      "filesystem": [
+        {
+          "mountpoint": "/",
+          "minsize": "2GiB"
+        }
+      ]
+    }
+  }
+}
