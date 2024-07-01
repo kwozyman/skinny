@@ -2,7 +2,11 @@
 FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 
 ARG EXTRA_RPM_PACKAGES=''
-ARG REMOVE_RPM_PACKAGES='libsmbclient samba-client-libs samba-common-libs sssd-ad sssd-common sssd-common-pac sssd-ipa sssd-krb5 sssd-krb5-common sssd-ldap sssd-nfs-idmap'
+ARG REMOVE_RPM_PACKAGES='libsmbclient samba-client-libs samba-common-libs sssd-ad sssd-common sssd-common-pac sssd-ipa sssd-krb5 sssd-krb5-common sssd-ldap sssd-nfs-idmap udisks2 libudisks2 avahi-libs gdisk adcli'
+
+RUN dnf remove -y \
+  ${REMOVE_RPM_PACKAGES} \
+  && dnf clean all
 
 RUN mv /etc/selinux /etc/selinux.tmp && \
   dnf install -y \
@@ -14,16 +18,11 @@ RUN mv /etc/selinux /etc/selinux.tmp && \
   && mv /etc/selinux.tmp /etc/selinux \
   && ln -s ../cloud-init.target /usr/lib/systemd/system/default.target.wants # Enable cloud-init
 
-RUN dnf remove -y \
-  ${REMOVE_RPM_PACKAGES} \
-  && dnf clean all
-
-
 # Setup /usr/lib/containers/storage as an additional store for images.
 # Remove once the base images have this set by default.
 RUN grep -q /usr/lib/containers/storage /etc/containers/storage.conf || \
-    sed -i -e '/additionalimage.*/a "/usr/lib/containers/storage",' \
-        /etc/containers/storage.conf
+  sed -i -e '/additionalimage.*/a "/usr/lib/containers/storage",' \
+  /etc/containers/storage.conf
 
 # Added for running as an OCI Container to prevent Overlay on Overlay issues.
 VOLUME /var/lib/containers
