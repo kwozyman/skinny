@@ -1,8 +1,8 @@
 # Define the base image for the second stage
 FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 
-ARG EXTRA_RPM_PACKAGES='pciutils tmux bootc ostree openssh-server' # cloud-init
-ARG REMOVE_RPM_PACKAGES='libsmbclient samba-client-libs samba-common-libs sssd-ad sssd-common sssd-common-pac sssd-ipa sssd-krb5 sssd-krb5-common sssd-ldap sssd-nfs-idmap udisks2 libudisks2 avahi-libs gdisk adcli sos fwupd skopeo flashrom toolbox netavark podman WALinuxAgent-udev sg3_utils zstd nano ncurses'
+ARG EXTRA_RPM_PACKAGES='pciutils tmux bootc ostree openssh-server xorg-x11-server-Xwayland xorg-x11-xauth xorg-x11-xinit xorg-x11-xinit-session firefox xorg-x11-server-Xorg mesa-dri-drivers xorg-x11-drivers xorg-x11-fonts-75dpi tigervnc-server-module gdm' # cloud-init
+ARG REMOVE_RPM_PACKAGES='libsmbclient samba-client-libs samba-common-libs sssd-ad sssd-common sssd-common-pac sssd-ipa sssd-krb5 sssd-krb5-common sssd-ldap sssd-nfs-idmap udisks2 libudisks2 avahi-libs gdisk adcli sos fwupd skopeo flashrom toolbox netavark  WALinuxAgent-udev sg3_utils zstd nano ncurses'
 
 # bsdtar nss-altfiles efi-filesystem aardvark-dns c-ares cryptsetup criu crun lvm2 lvm2-libs  containers-common  rpm-ostree fuse gmp conmon efibootmgr efivar-libs libverto ima-evm-utils passt passt-selinux'
 # polkit
