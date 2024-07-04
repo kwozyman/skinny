@@ -12,7 +12,7 @@
       "filesystem": [
         {
           "mountpoint": "/",
-          "minsize": "2GiB"
+          "minsize": "4 GiB"
         }
       ]
     }
