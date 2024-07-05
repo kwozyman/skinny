@@ -11,6 +11,14 @@ RUN for package in ${REMOVE_RPM_PACKAGES}; do dnf remove -y $package;done
 
 RUN dnf autoremove -y
 
+
+
+RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+RUN dnf -y install joe
+
+RUN dnf -y install libwayland-server libxkbcommon
+
+
 RUN mv /etc/selinux /etc/selinux.tmp && \
   dnf install -y \
   ${EXTRA_RPM_PACKAGES} \
