@@ -1,23 +1,22 @@
 # Define the base image for the second stage
-FROM registry.redhat.io/rhel9/rhel-bootc:9.4
 
-ARG EXTRA_RPM_PACKAGES='pciutils tmux bootc ostree openssh-server xorg-x11-server-Xwayland xorg-x11-xauth xorg-x11-xinit xorg-x11-xinit-session firefox xorg-x11-server-Xorg mesa-dri-drivers xorg-x11-drivers xorg-x11-fonts-75dpi tigervnc-server-module gdm' # cloud-init
-ARG REMOVE_RPM_PACKAGES='libsmbclient samba-client-libs samba-common-libs sssd-ad sssd-common sssd-common-pac sssd-ipa sssd-krb5 sssd-krb5-common sssd-ldap sssd-nfs-idmap udisks2 libudisks2 avahi-libs gdisk adcli sos fwupd skopeo flashrom toolbox netavark  WALinuxAgent-udev sg3_utils zstd nano ncurses'
+FROM registry.redhat.io/rhel9/rhel-bootc:9.4-1719820815
 
+ARG EXTRA_RPM_PACKAGES='pciutils tmux joe bootc ostree openssh-server firefox gnome-kiosk gnome-kiosk-search-appliance gdm xorg-x11-drivers xorg-x11-fonts-75dpi xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-xinit xorg-x11-xinit-session' # cloud-init
+
+# weston
+ARG REMOVE_RPM_PACKAGES='adcli avahi-libs flashrom flatpak* fwupd gdisk libsmbclient libudisks2 nano ncurses netavark nfs-utils pipewire rpcbind samba-client-libs samba-common-libs sg3_utils skopeo sos sssd-ad sssd-common sssd-common-pac sssd-ipa sssd-krb5 sssd-krb5-common sssd-ldap sssd-nfs-idmap toolbox tracker tracker-miners udisks2 WALinuxAgent-udev wireplumber zstd'
+
+# xorg-x11-server-Xwayland
 # bsdtar nss-altfiles efi-filesystem aardvark-dns c-ares cryptsetup criu crun lvm2 lvm2-libs  containers-common  rpm-ostree fuse gmp conmon efibootmgr efivar-libs libverto ima-evm-utils passt passt-selinux'
 # polkit
 
-RUN for package in ${REMOVE_RPM_PACKAGES}; do dnf remove -y $package;done
+RUN dnf remove -y ${REMOVE_RPM_PACKAGES}
 
 RUN dnf autoremove -y
 
-
-
+# Enable EPEL
 RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-RUN dnf -y install joe
-
-RUN dnf -y install libwayland-server libxkbcommon
-
 
 RUN mv /etc/selinux /etc/selinux.tmp && \
   dnf install -y \
@@ -27,12 +26,16 @@ RUN mv /etc/selinux /etc/selinux.tmp && \
   && mv /etc/selinux.tmp /etc/selinux \
   && ln -s ../cloud-init.target /usr/lib/systemd/system/default.target.wants # Enable cloud-init
 
-# Remove documentation, man pages and locales
+# Remove documentation, man pages and locales to free up space
 RUN rm -Rfv /usr/share/info/ /usr/share/man/ /usr/share/doc/ /usr/share/locale/
 
 RUN systemctl disable rhsmcertd
 
+# Copy GDM autologin configuration
 ADD config/gdm-custom.conf /etc/gdm/custom.conf
+
+# DMRC was used in prior GNOME versions, use new path
+ADD config/dmrc /var/lib/AccountsService/users/root
 
 # Setup /usr/lib/containers/storage as an additional store for images.
 # Remove once the base images have this set by default.
