@@ -29,6 +29,10 @@ losetup -d ${FREE}
 echo "Cut device backing storage"
 truncate ${MYDISK} --size 4G
 
+# Fix Partition tables
+echo "Fixing partition tables"
+echo -e "w\ny\nq\n" | gdisk ${MYDISK}
+
 # FIND Empty loopback device
 FREE=$(losetup -f)
 echo "Preparing disk image to be available via ${FREE} device"
