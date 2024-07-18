@@ -1,6 +1,6 @@
 # Define the base image for the second stage
 
-FROM registry.redhat.io/rhel9/rhel-bootc:9.4-1719820815
+FROM registry.redhat.io/rhel9/rhel-bootc:latest
 
 ARG EXTRA_RPM_PACKAGES='pciutils tmux joe bootc ostree openssh-server firefox gnome-kiosk gnome-kiosk-search-appliance gdm xorg-x11-drivers xorg-x11-fonts-75dpi xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-xinit xorg-x11-xinit-session' # cloud-init
 
@@ -10,6 +10,10 @@ ARG REMOVE_RPM_PACKAGES='adcli avahi-libs flashrom flatpak* fwupd gdisk libsmbcl
 # xorg-x11-server-Xwayland
 # bsdtar nss-altfiles efi-filesystem aardvark-dns c-ares cryptsetup criu crun lvm2 lvm2-libs  containers-common  rpm-ostree fuse gmp conmon efibootmgr efivar-libs libverto ima-evm-utils passt passt-selinux'
 # polkit
+
+
+# Disable BLSCFG on the image
+# RUN sed -i 's/GRUB_ENABLE_BLSCFG=.*/GRUB_ENABLE_BLSCFG=false/g' /etc/default/grub && grub2-mkconfig -o /boot/grub2/grub.cfg
 
 RUN dnf remove -y ${REMOVE_RPM_PACKAGES}
 
