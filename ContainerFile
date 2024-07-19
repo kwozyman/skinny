@@ -11,10 +11,6 @@ ARG REMOVE_RPM_PACKAGES='adcli avahi-libs flashrom flatpak* fwupd gdisk libsmbcl
 # bsdtar nss-altfiles efi-filesystem aardvark-dns c-ares cryptsetup criu crun lvm2 lvm2-libs  containers-common  rpm-ostree fuse gmp conmon efibootmgr efivar-libs libverto ima-evm-utils passt passt-selinux'
 # polkit
 
-
-# Disable BLSCFG on the image
-# RUN sed -i 's/GRUB_ENABLE_BLSCFG=.*/GRUB_ENABLE_BLSCFG=false/g' /etc/default/grub && grub2-mkconfig -o /boot/grub2/grub.cfg
-
 RUN dnf remove -y ${REMOVE_RPM_PACKAGES}
 
 RUN dnf autoremove -y
