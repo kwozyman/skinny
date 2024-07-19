@@ -11,7 +11,7 @@ losetup ${FREE} ${MYDISK}
 echo "Finding partitions on ${FREE}"
 partprobe ${FREE}
 
-echo "Our target partition will be the 4h one"
+echo "Our target partition will be the 4th one"
 TARGET=${FREE}p4
 TARGETBOOT=${FREE}p3
 
