@@ -28,17 +28,28 @@ export INITRD=$(cat ${MYCONFIG} | grep ^initrd | awk '{print $2}' | sed 's#/boot
 export OPTIONS=$(cat ${MYCONFIG} | grep ^options | cut -d ' ' -f 2-)
 export UUID=$(echo ${OPTIONS} | tr ' ' '\n' | grep root= | cut -d "=" -f 3-)
 
-echo "Adding grub stanza"
-envsubst <grub2stanza.tmpl.cfg >>${MYCONFIGTGT}
+if [[ -n $KERNEL ]] || [[ -n $INITRD ]] || [[ -n $OPTIONS ]] || [[ -n $UUID ]]; then
 
-echo "Removing blscfg entry"
-sed -i 's#^blscfg##' ${MYCONFIGTGT}
-rm -fv ${MYCONFIG}
+    echo "Adding grub stanza"
+    envsubst <grub2stanza.tmpl.cfg >>${MYCONFIGTGT}
 
-echo "unmounting filesystems"
+    echo "Removing blscfg entry"
+    sed -i 's#^blscfg##' ${MYCONFIGTGT}
+    rm -fv ${MYCONFIG}
 
-umount ${TARGETBOOT} /mnt/boot
-umount ${TARGET} /mnt/
+    echo "unmounting filesystems"
 
-echo "Disabling loopback device"
-losetup -d ${FREE}
+    umount ${TARGETBOOT} /mnt/boot
+    umount ${TARGET} /mnt/
+
+    echo "Disabling loopback device"
+    losetup -d ${FREE}
+else
+    echo "Some variables couldn't be filled, check:"
+    echo "KERNEL: ${KERNEL}"
+    echo "INITRD: ${INITRD}"
+    echo "OPTIONS: ${OPTIONS}"
+    echo "UUID: ${UUID}"
+    echo
+    echo "Leaving disks mounted for debugging $MYCONFIG"
+fi
