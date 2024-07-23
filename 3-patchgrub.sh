@@ -23,12 +23,15 @@ echo "Obtaining boot data"
 export MYCONFIG="/mnt/boot/loader.1/entries/ostree-1.conf"
 export MYCONFIGTGT="/mnt/boot/grub2/grub.cfg"
 
+[[ ! -f ${MYCONFIG} ]] && echo "ERROR: File ${MYCONFIG} not found" && exit 1
+[[ ! -f ${MYCONFIGTGT} ]] && echo "ERROR: File ${MYCONFIGTGT} not found" && exit 1
+
 export KERNEL=$(cat ${MYCONFIG} | grep ^linux | awk '{print $2}' | sed 's#/boot##g')
 export INITRD=$(cat ${MYCONFIG} | grep ^initrd | awk '{print $2}' | sed 's#/boot##g')
 export OPTIONS=$(cat ${MYCONFIG} | grep ^options | cut -d ' ' -f 2-)
 export UUID=$(echo ${OPTIONS} | tr ' ' '\n' | grep root= | cut -d "=" -f 3-)
 
-if [[ -n $KERNEL ]] || [[ -n $INITRD ]] || [[ -n $OPTIONS ]] || [[ -n $UUID ]]; then
+if [[ -n ${KERNEL} ]] || [[ -n ${INITRD} ]] || [[ -n ${OPTIONS} ]] || [[ -n ${UUID} ]]; then
 
     echo "Adding grub stanza"
     envsubst <grub2stanza.tmpl.cfg >>${MYCONFIGTGT}
