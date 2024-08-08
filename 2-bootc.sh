@@ -19,7 +19,7 @@ podman run \
     --rm \
     -it \
     --privileged \
-    --pull=newer \
+    --pull=always \
     --security-opt label=type:unconfined_t \
     -v $(pwd)/output:/output \
     -v /var/lib/containers/storage:/var/lib/containers/storage \
