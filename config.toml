@@ -1,0 +1,79 @@
+[customizations.installer.kickstart]
+contents = """
+text --non-interactive
+zerombr
+clearpart --all --initlabel
+autopart --type=plain --fstype=ext4 --nohome
+network --bootproto=dhcp --device=link --activate --onboot=on
+rootpw --plaintext linux123
+user --name=user --password=password --plaintext
+# reboot
+
+%post --log=/root/ks-post-grubcfg.log --interpreter=/bin/bash
+
+cat << EOF > /boot/grub2/grub.cfg
+
+function load_video {
+insmod efi_gop
+insmod efi_uga
+insmod video_bochs
+insmod video_cirrus
+insmod all_video
+}
+
+load_video
+set gfxpayload=keep
+insmod gzio
+insmod part_gpt
+insmod ext2
+
+set timeout=60
+
+### END /etc/grub.d/00_header ###
+EOF
+
+%end
+
+%post --log=/root/ks-post-grubentry.log --interpreter=/bin/bash
+
+#raw
+echo "Obtaining boot data"
+
+export MYCONFIG="/boot/loader/entries/ostree-1.conf"
+export MYCONFIGTGT="/boot/grub2/grub.cfg"
+export BOOTUUIDCFG="/boot/grub2/bootuuid.cfg"
+export KERNEL=`cat $MYCONFIG | grep ^linux | awk '{print $2}'`
+export INITRD=`cat $MYCONFIG | grep ^initrd | awk '{print $2}'`
+export OPTIONS=`cat $MYCONFIG | grep ^options | cut -d ' ' -f 2-`
+export UUID=`echo $OPTIONS | tr ' ' 'n' | grep root= | cut -d "=" -f 3-`
+export BOOTUUID=`cat $BOOTUUIDCFG | tr ' ' 'n' | grep "=" | cut -d "=" -f 2- | xargs echo`
+
+if [[ -n $KERNEL ]] || [[ -n $INITRD ]] || [[ -n $OPTIONS ]] || [[ -n $UUID ]] ; then
+
+echo "Adding grub stanza"
+
+cat << EOF >> $MYCONFIGTGT
+menuentry 'RHEL BootC ' {
+search --fs-uuid "$BOOTUUID" --set boot --no-floppy
+echo 'Loading Linux $KERNEL ...'
+linux $KERNEL $OPTIONS
+echo 'Loading initial ramdisk ...'
+initrd $INITRD
+}
+
+EOF
+
+else
+
+echo "Some variables couldn't be filled, check:"
+echo "KERNEL: $KERNEL"
+echo "INITRD: $INITRD"
+echo "OPTIONS: $OPTIONS"
+echo "UUID: $UUID"
+echo
+echo "Leaving disks mounted for debugging $MYCONFIG"
+fi
+
+#end raw
+%end
+"""
