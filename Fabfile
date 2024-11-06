@@ -1,0 +1,15 @@
+---
+metadata:
+  name: skinny
+  description: Reduced size bootc
+from: quay.io/fedora/fedora-bootc:40
+include:
+  - modules/ssh/ssh.yaml
+  - modules/dnf/autoremove.yaml
+  - modules/dnf/install.yaml
+  - modules/dnf/upgrade.yaml
+  - modules/cloud-init/enable.yaml
+  - skinny/skinny.yaml
+buildargs:
+  - SSHPUBKEY: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMPkccS+SKCZEWGJzH7ew0eNPItvqeGFpOhZprmL9owO
+  - RPMS: pciutils tmux joe bootc ostree openssh-server firefox gnome-kiosk gnome-kiosk-search-appliance gdm xorg-x11-drivers xorg-x11-fonts-75dpi xorg-x11-server-Xorg xorg-x11-xauth xorg-x11-xinit xorg-x11-xinit-session

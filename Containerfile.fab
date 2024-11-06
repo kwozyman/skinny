@@ -1,0 +1,21 @@
+# Define the base image for the second stage
+
+# FROM registry.redhat.io/rhel9/rhel-bootc:9.4-1716464049
+FROM quay.io/fedora/fedora-bootc:40
+
+#RUN mv /etc/selinux /etc/selinux.tmp && \
+#  && mv /etc/selinux.tmp /etc/selinux \
+
+# Remove documentation, man pages and locales to free up space
+RUN rm -Rfv /usr/share/info/ /usr/share/man/ /usr/share/doc/ /usr/share/locale/
+
+RUN systemctl disable rhsmcertd
+
+# Copy GDM autologin configuration
+ADD config/gdm-custom.conf /etc/gdm/custom.conf
+
+# DMRC was used in prior GNOME versions, use new path
+ADD config/dmrc /var/lib/AccountsService/users/root
+
+# Added for running as an OCI Container to prevent Overlay on Overlay issues.
+VOLUME /var/lib/containers

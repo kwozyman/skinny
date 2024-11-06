@@ -1,0 +1,6 @@
+---
+metadata:
+  name: skinny
+  description: |
+    Reduced RHEL image
+containerfile: Containerfile.fab
